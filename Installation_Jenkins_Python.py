@@ -1,3 +1,4 @@
+
 import subprocess
 
 APT_INSTALL_LIST = ["curl", "jenkins"]
@@ -6,7 +7,7 @@ APT_INSTALL_LIST_SUBPROCESS = " ".join(APT_INSTALL_LIST)
 CMD_WGET_PGP = "sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key"
 CMD_REPO_JENKINS = 'echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null'
 CMD_APT_UPDATE = "sudo apt-get update"
-CMD_APT_INSTALL = "sudo apt install -y " + APT_INSTALL_LIST_SUBPROCESS
+CMD_APT_INSTALL = "wget -4 https://ftp.halifax.rwth-aachen.de/jenkins/debian-stable/jenkins_2.580.1_all.deb && sudo apt install -y curl ./jenkins_2.580.1_all.deb"
 
 CMD_UFW_DISABLE = "sudo ufw disable"
 CMD_JENKINS_ENABLE = "sudo systemctl enable jenkins"
