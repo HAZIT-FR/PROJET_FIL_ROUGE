@@ -9,7 +9,7 @@ CMD_REPO_JENKINS = 'echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] 
 CMD_APT_UPDATE = "sudo apt-get update"
 CMD_APT_INSTALL = "wget -4 https://ftp.halifax.rwth-aachen.de/jenkins/debian-stable/jenkins_2.580.1_all.deb && sudo apt install -y curl ./jenkins_2.580.1_all.deb"
 
-CMD_UFW_DISABLE = "sudo ufw disable"
+CMD_UFW_DISABLE = "command -v ufw >/dev/null 2>&1 && sudo ufw disable || true"
 CMD_JENKINS_ENABLE = "sudo systemctl enable jenkins"
 CMD_JENKINS_START = "sudo systemctl start jenkins"
 
