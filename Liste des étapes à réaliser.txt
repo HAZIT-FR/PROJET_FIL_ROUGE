@@ -1,0 +1,55 @@
+### Étape 1 : Installer les 3 logiciels sur la même VM. 
+
+# Utilisation de Vagrant pour installer une VM. 
+
+### Installation de Java
+
+sudo apt-get update && apt-get upgrade # MAJ
+sudo apt-get install openjdk-21* # Java install
+
+# ajouter JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 dans  /etc/environment 
+# ajoute JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 dans .bashrc
+
+# Vérification de l'installation 
+java -version #récupérer la version
+source .bashrc
+echo $JAVA_HOME
+
+### Installation de Maven
+
+wget https://downloads.apache.org/maven/maven-3/3.9.16/binaries/apache-maven-3.9.16-bin.tar.gz -P /tmp # Download
+
+sudo tar xf /tmp/apache-maven-*.tar.gz -C /opt # Extraction
+sudo ln -s /opt/apache-maven-3.9.16 /opt/maven # Lien Symbolique
+
+# Éditer /etc/profile.d/maven.sh 
+
+# Ajouter 
+
+export JAVA_HOME=$(dirname $(dirname $(readlink $(readlink $(which javac)))))
+export M2_HOME=/opt/maven
+export MAVEN_HOME=/opt/maven
+export PATH=${M2_HOME}/bin:${PATH}
+
+sudo chmod u+x,g+x,o+x /etc/profile.d/maven.sh
+
+
+# Vérification
+source /etc/profile.d/maven.sh 
+mvn -version
+ 
+### Installation de Jenkins 
+
+sudo apt-get install curl # Install curl
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \ https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \ https://pkg.jenkins.io/debian-stable binary/ | sudo tee \ /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+sudo apt-get update
+
+sudo apt-get install jenkins
+
+sudo ufw disable
+
+sudo systemctl enable jenkins 
+sudo systemctl start jenkins
