@@ -4,6 +4,8 @@ services:
     restart: unless-stopped
     image: releases-docker.jfrog.io/jfrog/artifactory-oss:7.161.26
     environment:
+      # Évite le blocage de connexion de l’édition OSS.
+      JF_JFCONNECT_ENABLED: "false"
       JF_SHARED_DATABASE_TYPE: postgresql
       JF_SHARED_DATABASE_DRIVER: org.postgresql.Driver
       JF_SHARED_DATABASE_URL: jdbc:postgresql://postgres:5432/artifactory

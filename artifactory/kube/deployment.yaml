@@ -44,6 +44,8 @@ spec:
       - name: artifactory
         image: releases-docker.jfrog.io/jfrog/artifactory-oss:7.161.26
         env:
+        - name: JF_JFCONNECT_ENABLED
+          value: "false"
         - name: JF_SHARED_DATABASE_TYPE
           value: postgresql
         - name: JF_SHARED_DATABASE_DRIVER
