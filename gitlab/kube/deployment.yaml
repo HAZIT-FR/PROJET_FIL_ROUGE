@@ -68,13 +68,8 @@ spec:
             secretKeyRef:
               name: fil-rouge-env
               key: GITLAB_PASSWORD
-        - name: GITLAB_URL
-          valueFrom:
-            secretKeyRef:
-              name: fil-rouge-env
-              key: GITLAB_URL
         - name: GITLAB_OMNIBUS_CONFIG
-          value: 'external_url ENV[''GITLAB_URL'']
+          value: 'external_url ''http://localhost:8088''
 
             nginx[''listen_port''] = 80
 

@@ -13,8 +13,8 @@ Utiliser Compose et Kubernetes successivement sur une machine de 16 Go.
 SonarQube demande `vm.max_map_count=1048576` sur l’hôte Linux du moteur Docker.
 
 ```sh
-sh initialiser.sh
-# Adapter HOST_IP, GITLAB_URL et JENKINS_URL dans .env.
+cp .env.example .env
+# Renseigner les six mots de passe dans .env (lettres et chiffres).
 docker network create fil-rouge
 docker compose --env-file .env -f postgres/compose/compose.yaml up -d --wait
 docker compose --env-file .env -f mysql/compose/compose.yaml up -d --wait
@@ -26,7 +26,7 @@ docker compose --env-file .env -f sonarqube/compose/compose.yaml up -d
 ```
 
 `.env` est privé et ignoré par Git.
-Sur CT-PYTHON-01, remplacer `127.0.0.1` et `localhost` par `192.168.1.42` pour accéder aux interfaces depuis le LAN.
+Les ports sont accessibles sur l’IP de la machine. Pour accéder à GitLab depuis un autre poste, remplacer `localhost` dans son `external_url` par l’IP de la machine.
 
 ```sh
 docker compose --env-file .env -f jenkins/compose/compose.yaml exec jenkins java -version
@@ -106,7 +106,7 @@ Pour un autre cluster, publier les deux images dans un registre accessible et re
 Le namespace `fil-rouge` possède ses propres volumes : les données Compose ne sont pas transférées automatiquement.
 Reprendre l’initialisation GitLab/SonarQube/Artifactory et le job Jenkins ci-dessus.
 
-Ouvrir les interfaces avec un port-forward par terminal (ports de `.env`, depuis la machine qui exécute les commandes) :
+Ouvrir les interfaces avec un port-forward par terminal (depuis la machine qui exécute les commandes) :
 
 ```sh
 kubectl -n fil-rouge port-forward service/gitlab 8088:80
@@ -116,7 +116,7 @@ kubectl -n fil-rouge port-forward service/artifactory 8082:8082
 kubectl -n fil-rouge port-forward service/sonarqube 9000:9000
 ```
 
-Adapter les URL `.env` au point d’accès utilisé avant `kubectl apply -k .`.
+Adapter aussi `external_url` dans `gitlab/kube/deployment.yaml` si GitLab est utilisé depuis un autre poste.
 Les échanges du pipeline utilisent les Services internes ; le Jenkinsfile reste identique.
 Vérifier aussi les quatre outils avec `kubectl -n fil-rouge exec deploy/jenkins -- <commande>`.
 Récupérer les sauvegardes avec `kubectl -n fil-rouge cp <pod-jenkins>:/backups backups`.

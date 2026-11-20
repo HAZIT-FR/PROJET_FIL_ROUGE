@@ -61,11 +61,6 @@ spec:
             secretKeyRef:
               name: fil-rouge-env
               key: JENKINS_PASSWORD
-        - name: JENKINS_URL
-          valueFrom:
-            secretKeyRef:
-              name: fil-rouge-env
-              key: JENKINS_URL
         - name: TOMCAT_PASSWORD
           valueFrom:
             secretKeyRef:

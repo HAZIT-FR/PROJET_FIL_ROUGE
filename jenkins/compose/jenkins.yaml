@@ -12,9 +12,6 @@ jenkins:
       allowAnonymousRead: false
   remotingSecurity:
     enabled: true
-unclassified:
-  location:
-    url: "${JENKINS_URL}"
 credentials:
   system:
     domainCredentials:

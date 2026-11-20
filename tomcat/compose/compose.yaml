@@ -2,23 +2,18 @@ name: fil-rouge-tomcat
 services:
   tomcat:
     restart: unless-stopped
-    logging:
-      driver: json-file
-      options:
-        max-size: 10m
-        max-file: '3'
     image: fil-rouge/tomcat:1.0
     build: .
     environment:
-      TOMCAT_PASSWORD: ${TOMCAT_PASSWORD:?Renseigner .env}
+      TOMCAT_PASSWORD: ${TOMCAT_PASSWORD}
       JAVA_OPTS: -Xmx512m
       DB_HOST: mysql
       DB_PORT: '3306'
       DB_NAME: application
       DB_USER: application
-      DB_PASSWORD: ${MYSQL_PASSWORD:?Renseigner .env}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-    - ${HOST_IP:-127.0.0.1}:8089:8080
+    - "8089:8080"
     volumes:
     - tomcat-apps:/usr/local/tomcat/webapps
 volumes:
