@@ -18,7 +18,7 @@ credentials:
       - credentials:
           - usernamePassword:
               id: tomcat
-              username: deployer
+              username: admin
               password: "${TOMCAT_PASSWORD}"
           - usernamePassword:
               id: mysql

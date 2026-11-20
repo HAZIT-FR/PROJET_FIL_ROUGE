@@ -6,7 +6,8 @@ umask 077
 cat > "$CATALINA_HOME/conf/tomcat-users.xml" <<EOF
 <tomcat-users>
   <role rolename="manager-script" />
-  <user username="deployer" password="$TOMCAT_PASSWORD" roles="manager-script" />
+  <role rolename="manager-gui" />
+  <user username="admin" password="$TOMCAT_PASSWORD" roles="manager-script,manager-gui" />
 </tomcat-users>
 EOF
 exec catalina.sh run

@@ -40,7 +40,7 @@ docker compose --env-file .env -f jenkins/compose/compose.yaml exec jenkins sona
 | --- | --- | --- |
 | GitLab | 8088 | root, mot de passe `.env` |
 | Jenkins | 8080 | admin, mot de passe `.env` |
-| Tomcat | 8089 | deployer, accès API uniquement |
+| Tomcat | 8089 | admin, interface `/manager/html` et API |
 | Artifactory | 8082 | admin / password, à changer au premier accès |
 | SonarQube | 9000 | admin / admin, à changer au premier accès |
 
