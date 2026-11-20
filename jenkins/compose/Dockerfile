@@ -1,3 +1,4 @@
+# Doc Jenkins et plugins : https://www.jenkins.io/doc/book/installing/docker/
 FROM jenkins/jenkins:lts-jdk21@sha256:74401de6a6f92e1afe1b02d1c8e3d0c33f263bfb5275dd8813f9150355f2367b
 
 USER root
@@ -9,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git curl unzip ca-certificates mariadb-client \
     && rm -rf /var/lib/apt/lists/*
 
+# Doc Maven : https://maven.apache.org/install.html
 RUN set -eu; \
     url="https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"; \
     curl -fsSL "$url" -o /tmp/maven.tar.gz; \
@@ -19,6 +21,7 @@ RUN set -eu; \
     rm /tmp/maven.*
 
 # La distribution Any utilise le JDK déjà présent.
+# Doc : https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/scanners/sonarscanner
 RUN set -eu; \
     curl -fsSL "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SCANNER_VERSION}.zip" -o /tmp/scanner.zip; \
     echo "${SCANNER_SHA256}  /tmp/scanner.zip" | sha256sum -c -; \

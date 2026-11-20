@@ -1,4 +1,5 @@
 #!/bin/sh
+# Rôles du Manager : https://tomcat.apache.org/tomcat-9.0-doc/manager-howto.html#Configuring_Manager_Application_Access
 set -eu
 : "${TOMCAT_PASSWORD:?Mot de passe Tomcat absent}"
 mot_de_passe=$(printf '%s' "$TOMCAT_PASSWORD" | sed 's/\&/\&amp;/g; s/</\&lt;/g; s/"/\&quot;/g')

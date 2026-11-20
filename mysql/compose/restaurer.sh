@@ -1,4 +1,5 @@
 #!/bin/sh
+# Doc : https://dev.mysql.com/doc/refman/8.4/en/reloading-sql-format-dumps.html
 # Restauration dans une base séparée, depuis la racine du dépôt.
 set -eu
 umask 077

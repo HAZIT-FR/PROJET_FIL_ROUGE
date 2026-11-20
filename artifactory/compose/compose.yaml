@@ -1,3 +1,4 @@
+# Doc : https://docs.jfrog.com/installation/docs/docker
 name: fil-rouge-artifactory
 services:
   artifactory:
@@ -5,6 +6,7 @@ services:
     image: releases-docker.jfrog.io/jfrog/artifactory-oss:7.161.26
     environment:
       # Évite le blocage de connexion de l’édition OSS.
+      # Source du correctif : https://github.com/jfrog/charts/issues/2233
       JF_JFCONNECT_ENABLED: "false"
       JF_SHARED_DATABASE_TYPE: postgresql
       JF_SHARED_DATABASE_DRIVER: org.postgresql.Driver

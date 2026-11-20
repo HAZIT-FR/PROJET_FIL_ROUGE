@@ -1,3 +1,4 @@
+# Doc : https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
 apiVersion: v1
 kind: Service
 metadata:

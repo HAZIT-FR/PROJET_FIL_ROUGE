@@ -1,3 +1,4 @@
+# Doc : https://hub.docker.com/_/tomcat
 FROM tomcat:9.0.124-jdk21-temurin-noble
 RUN cp -r /usr/local/tomcat/webapps.dist/manager /usr/local/tomcat/webapps/manager
 COPY context.xml /usr/local/tomcat/webapps/manager/META-INF/context.xml

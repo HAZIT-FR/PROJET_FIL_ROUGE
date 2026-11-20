@@ -140,4 +140,21 @@ docker network rm fil-rouge
 kubectl delete namespace fil-rouge
 ```
 
-Références : [sujet](https://drive.google.com/file/d/1WfSx4R9hgGVbpFAQOqGsYJLbTMPzFZ4f/view), [Maven](https://maven.apache.org/download.cgi), [SonarScanner](https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/scanners/sonarscanner), [Artifactory](https://docs.jfrog.com/installation/docs/docker).
+## Documentation
+
+Les liens utiles sont aussi en commentaire dans les fichiers concernés.
+
+| Sujet | Documentation |
+| --- | --- |
+| Docker Compose et `.env` | [Fichier Compose](https://docs.docker.com/reference/compose-file/) · [Variables `.env`](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/) |
+| GitLab | [Installation Docker](https://docs.gitlab.com/install/docker/installation/) · [Configuration et `GITLAB_OMNIBUS_CONFIG`](https://docs.gitlab.com/install/docker/configuration/) |
+| Jenkins | [Image Docker et plugins](https://www.jenkins.io/doc/book/installing/docker/) · [Pipeline](https://www.jenkins.io/doc/book/pipeline/syntax/) · [Configuration YAML](https://github.com/jenkinsci/configuration-as-code-plugin) |
+| Maven | [Installation](https://maven.apache.org/install.html) |
+| Tomcat | [Image Docker](https://hub.docker.com/_/tomcat) · [Manager et déploiement WAR](https://tomcat.apache.org/tomcat-9.0-doc/manager-howto.html) |
+| MySQL | [Image et variables](https://hub.docker.com/_/mysql) · [Restauration SQL](https://dev.mysql.com/doc/refman/8.4/en/reloading-sql-format-dumps.html) |
+| PostgreSQL | [Image, variables et scripts d’initialisation](https://hub.docker.com/_/postgres) |
+| SonarQube | [Installation Docker](https://docs.sonarsource.com/sonarqube-community-build/server-installation/from-docker-image/installation-overview) · [Prérequis Linux](https://docs.sonarsource.com/sonarqube-community-build/server-installation/pre-installation/linux) · [SonarScanner](https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/scanners/sonarscanner) |
+| Artifactory | [Installation Docker](https://docs.jfrog.com/installation/docs/docker) · [Bug de connexion OSS et correctif](https://github.com/jfrog/charts/issues/2233) |
+| Kubernetes | [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) · [StatefulSet](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) · [Volumes persistants](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) · [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/) |
+
+[Sujet du TP](https://drive.google.com/file/d/1WfSx4R9hgGVbpFAQOqGsYJLbTMPzFZ4f/view).

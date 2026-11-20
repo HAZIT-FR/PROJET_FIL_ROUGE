@@ -1,3 +1,4 @@
+# Doc : https://www.jenkins.io/doc/book/installing/docker/
 name: fil-rouge-jenkins
 services:
   jenkins:

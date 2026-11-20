@@ -1,3 +1,4 @@
+# Doc : https://docs.gitlab.com/install/docker/configuration/
 name: fil-rouge-gitlab
 services:
   gitlab:
@@ -7,6 +8,8 @@ services:
     shm_size: 256m
     environment:
       GITLAB_ROOT_PASSWORD: ${GITLAB_PASSWORD}
+      # Configuration officielle de l’image GitLab (URL, ports, options).
+      # https://docs.gitlab.com/install/docker/configuration/#pre-configure-docker-container
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'http://localhost:8088'
         nginx['listen_port'] = 80
