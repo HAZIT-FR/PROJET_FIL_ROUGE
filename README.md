@@ -26,7 +26,7 @@ docker compose --env-file .env -f sonarqube/compose/compose.yaml up -d
 ```
 
 `.env` est privé et ignoré par Git.
-Les ports sont accessibles sur l’IP de la machine. Pour accéder à GitLab depuis un autre poste, remplacer `localhost` dans son `external_url` par l’IP de la machine.
+Les ports sont accessibles sur l’IP de la machine. Le Compose GitLab contient directement l’URL `http://gitlab-tp.lan.hazit.fr:8088`. Sur la VM de formation, adapter `external_url` à son adresse. Un seul fichier Compose suffit par techno.
 
 ```sh
 docker compose --env-file .env -f jenkins/compose/compose.yaml exec jenkins java -version
