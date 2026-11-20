@@ -3,13 +3,13 @@ kind: Kustomization
 namespace: fil-rouge
 resources:
 - namespace.yaml
-- gitlab/kubernetes.yaml
-- jenkins/kubernetes.yaml
-- tomcat/kubernetes.yaml
-- mysql/kubernetes.yaml
-- postgres/kubernetes.yaml
-- artifactory/kubernetes.yaml
-- sonarqube/kubernetes.yaml
+- gitlab/kube/deployment.yaml
+- jenkins/kube/deployment.yaml
+- tomcat/kube/deployment.yaml
+- mysql/kube/deployment.yaml
+- postgres/kube/deployment.yaml
+- artifactory/kube/deployment.yaml
+- sonarqube/kube/deployment.yaml
 secretGenerator:
 - name: fil-rouge-env
   envs:
@@ -17,7 +17,7 @@ secretGenerator:
 configMapGenerator:
 - name: jenkins-config
   files:
-  - jenkins/jenkins.yaml
+  - jenkins/compose/jenkins.yaml
 - name: postgres-init
   files:
-  - postgres/initialiser.sql
+  - postgres/compose/initialiser.sql

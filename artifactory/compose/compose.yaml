@@ -1,0 +1,31 @@
+name: fil-rouge-artifactory
+services:
+  artifactory:
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+    image: releases-docker.jfrog.io/jfrog/artifactory-oss:7.161.26
+    environment:
+      JF_SHARED_DATABASE_TYPE: postgresql
+      JF_SHARED_DATABASE_DRIVER: org.postgresql.Driver
+      JF_SHARED_DATABASE_URL: jdbc:postgresql://postgres:5432/artifactory
+      JF_SHARED_DATABASE_USERNAME: postgres
+      JF_SHARED_DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?Renseigner .env}
+      JF_SHARED_EXTRAJAVAOPTS: -Xms512m -Xmx2g
+    ports:
+    - ${HOST_IP:-127.0.0.1}:8082:8082
+    volumes:
+    - artifactory-data:/var/opt/jfrog/artifactory
+    ulimits:
+      nofile:
+        soft: 32000
+        hard: 32000
+volumes:
+  artifactory-data:
+networks:
+  default:
+    name: fil-rouge
+    external: true

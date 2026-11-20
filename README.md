@@ -2,7 +2,8 @@
 
 GitLab → Jenkins → SonarQube → Artifactory → Tomcat. Sauvegarde MySQL en fin de pipeline.
 
-Chaque dossier contient les fichiers du composant et son manifeste Kubernetes.
+Chaque techno a un dossier `compose/` (service et fichiers associés) et un dossier `kube/` (manifeste Kubernetes).
+Chaque Compose se lance séparément, depuis la racine du dépôt, avec `-f` et le même fichier `.env`.
 Les anciens scripts Python sont conservés ; ils ne servent pas au déploiement conteneurisé.
 
 ## Docker Compose
@@ -14,21 +15,25 @@ SonarQube demande `vm.max_map_count=1048576` sur l’hôte Linux du moteur Docke
 ```sh
 sh initialiser.sh
 # Adapter HOST_IP, GITLAB_URL et JENKINS_URL dans .env.
-docker compose config -q
-docker compose build
+docker network create fil-rouge
+docker compose --env-file .env -f postgres/compose/compose.yaml up -d --wait
+docker compose --env-file .env -f mysql/compose/compose.yaml up -d --wait
+docker compose --env-file .env -f gitlab/compose/compose.yaml up -d
+docker compose --env-file .env -f jenkins/compose/compose.yaml up -d --build
+docker compose --env-file .env -f tomcat/compose/compose.yaml up -d --build
+docker compose --env-file .env -f artifactory/compose/compose.yaml up -d
+docker compose --env-file .env -f sonarqube/compose/compose.yaml up -d
 ```
 
 `.env` est privé et ignoré par Git.
 Sur CT-PYTHON-01, remplacer `127.0.0.1` et `localhost` par `192.168.1.42` pour accéder aux interfaces depuis le LAN.
 
 ```sh
-docker compose up -d
-docker compose ps
-docker compose exec jenkins java -version
-docker compose exec jenkins javac -version
-docker compose exec jenkins mvn -version
-docker compose exec jenkins git --version
-docker compose exec jenkins sonar-scanner --version
+docker compose --env-file .env -f jenkins/compose/compose.yaml exec jenkins java -version
+docker compose --env-file .env -f jenkins/compose/compose.yaml exec jenkins javac -version
+docker compose --env-file .env -f jenkins/compose/compose.yaml exec jenkins mvn -version
+docker compose --env-file .env -f jenkins/compose/compose.yaml exec jenkins git --version
+docker compose --env-file .env -f jenkins/compose/compose.yaml exec jenkins sonar-scanner --version
 ```
 
 | Service | Port hôte | Compte initial |
@@ -55,7 +60,7 @@ Les mots de passe de base ne s’appliquent qu’à l’initialisation des volum
 | sonarqube | Secret text | jeton d’analyse |
 | artifactory | Username with password | compte de dépôt et son mot de passe/jeton |
 
-`tomcat` et `mysql` sont déjà déclarés dans `jenkins/jenkins.yaml`.
+`tomcat` et `mysql` sont déjà déclarés dans `jenkins/compose/jenkins.yaml`.
 Créer un job **Pipeline**, coller `jenkins/Jenkinsfile` dans **Pipeline script**, puis enregistrer.
 Premier lancement : il installe les paramètres et s’arrête faute d’adresse applicative.
 Relancer avec **Build with Parameters**, en renseignant par exemple `http://gitlab/groupe/application.git` et la branche.
@@ -75,8 +80,8 @@ Copier le dump choisi, puis le restaurer dans la base séparée `restauration` :
 ```sh
 mkdir -p backups
 chmod 700 backups
-docker compose cp jenkins:/backups/. backups/
-sh mysql/restaurer.sh backups/nom-du-fichier.sql.gz
+docker compose --env-file .env -f jenkins/compose/compose.yaml cp jenkins:/backups/. backups/
+sh mysql/compose/restaurer.sh backups/nom-du-fichier.sql.gz
 ```
 
 La base `application` reste en place. Supprimer la base `restauration` après vérification.
@@ -85,13 +90,13 @@ Les dumps restent privés.
 ## Kubernetes
 
 Un cluster et `kubectl` doivent être disponibles, avec une StorageClass par défaut.
-Construire les mêmes images, puis les charger dans Minikube :
+Arrêter les conteneurs Compose avant de lancer Kubernetes. Construire les mêmes images, puis les charger dans Minikube :
 
 ```sh
-docker compose build
+docker compose --env-file .env -f jenkins/compose/compose.yaml build
+docker compose --env-file .env -f tomcat/compose/compose.yaml build
 minikube image load fil-rouge/jenkins:1.0
 minikube image load fil-rouge/tomcat:1.0
-docker compose down
 kubectl kustomize . > /dev/null
 kubectl apply -k .
 kubectl -n fil-rouge get pods,pvc,svc
@@ -119,10 +124,19 @@ Ne pas supprimer les volumes pour simplement arrêter la démonstration.
 
 ## Fin du TP
 
-Ces commandes suppriment la pile et ses données :
+Pour arrêter un composant :
 
 ```sh
-docker compose down -v
+docker compose --env-file .env -f tomcat/compose/compose.yaml down
+```
+
+En fin de TP, ces commandes suppriment les composants et leurs données :
+
+```sh
+for techno in gitlab jenkins tomcat mysql artifactory sonarqube postgres; do
+  docker compose --env-file .env -f "$techno/compose/compose.yaml" down -v
+done
+docker network rm fil-rouge
 kubectl delete namespace fil-rouge
 ```
 

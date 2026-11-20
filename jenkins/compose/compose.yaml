@@ -1,0 +1,31 @@
+name: fil-rouge-jenkins
+services:
+  jenkins:
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+    image: ${JENKINS_IMAGE:-fil-rouge/jenkins:1.0}
+    build: .
+    environment:
+      JAVA_OPTS: -Djenkins.install.runSetupWizard=false -Xmx1536m
+      CASC_JENKINS_CONFIG: /etc/jenkins/jenkins.yaml
+      JENKINS_PASSWORD: ${JENKINS_PASSWORD:?Renseigner .env}
+      JENKINS_URL: ${JENKINS_URL}
+      TOMCAT_PASSWORD: ${TOMCAT_PASSWORD:?Renseigner .env}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Renseigner .env}
+    ports:
+    - ${HOST_IP:-127.0.0.1}:8080:8080
+    volumes:
+    - jenkins-data:/var/jenkins_home
+    - ./jenkins.yaml:/etc/jenkins/jenkins.yaml:ro
+    - mysql-backups:/backups
+volumes:
+  jenkins-data:
+  mysql-backups:
+networks:
+  default:
+    name: fil-rouge
+    external: true
