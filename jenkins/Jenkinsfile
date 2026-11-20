@@ -2,10 +2,6 @@
 pipeline {
     agent any
     options { skipDefaultCheckout(true) }
-    parameters {
-        string(name: 'GIT_URL', defaultValue: '', description: 'URL du dépôt GitLab')
-        string(name: 'GIT_BRANCH', defaultValue: 'main', description: 'Branche')
-    }
     environment {
         SONAR_HOST_URL = 'http://sonarqube:9000'
     }
@@ -13,7 +9,9 @@ pipeline {
         stage('Code') {
             steps {
                 deleteDir()
-                git url: params.GIT_URL, branch: params.GIT_BRANCH, credentialsId: 'gitlab'
+                git url: 'http://gitlab-tp.lan.hazit.fr:8088/root/petclinic.git',
+                    branch: 'master',
+                    credentialsId: 'gitlab'
             }
         }
         stage('Compilation') {
