@@ -64,21 +64,9 @@ spec:
               key: MYSQL_PASSWORD
         ports:
         - containerPort: 8080
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            memory: 1Gi
-        startupProbe:
-          tcpSocket:
-            port: 8080
-          periodSeconds: 10
-          failureThreshold: 90
         readinessProbe:
           tcpSocket:
             port: 8080
-          periodSeconds: 10
         volumeMounts:
         - name: apps
           mountPath: /usr/local/tomcat/webapps

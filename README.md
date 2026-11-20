@@ -74,7 +74,7 @@ MySQL 8.4 LTS remplace la version 5.7 suggérée dans le sujet ; compatibilité 
 
 ## Sauvegarde
 
-Les dumps compressés sont dans `/backups` du conteneur Jenkins, sur un volume distinct.
+Chaque build réussi produit `/backups/application-<numéro du build>.sql.gz`, sur un volume distinct du conteneur Jenkins.
 Copier le dump choisi, puis le restaurer dans la base séparée `restauration` :
 
 ```sh
@@ -89,7 +89,7 @@ Les dumps restent privés.
 
 ## Kubernetes
 
-Un cluster et `kubectl` doivent être disponibles, avec une StorageClass par défaut.
+Un cluster et `kubectl` doivent être disponibles, avec une StorageClass par défaut et assez de mémoire pour les sept conteneurs.
 Arrêter les conteneurs Compose avant de lancer Kubernetes. Construire les mêmes images, puis les charger dans Minikube :
 
 ```sh

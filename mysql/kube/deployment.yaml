@@ -47,21 +47,9 @@ spec:
               key: MYSQL_PASSWORD
         ports:
         - containerPort: 3306
-        resources:
-          requests:
-            cpu: 200m
-            memory: 512Mi
-          limits:
-            memory: 1Gi
-        startupProbe:
-          tcpSocket:
-            port: 3306
-          periodSeconds: 10
-          failureThreshold: 90
         readinessProbe:
           tcpSocket:
             port: 3306
-          periodSeconds: 10
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql

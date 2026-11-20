@@ -70,36 +70,16 @@ spec:
               name: fil-rouge-env
               key: GITLAB_PASSWORD
         - name: GITLAB_OMNIBUS_CONFIG
-          value: 'external_url ''http://localhost:8088''
-
-            nginx[''listen_port''] = 80
-
-            nginx[''listen_https''] = false
-
-            letsencrypt[''enable''] = false
-
-            prometheus_monitoring[''enable''] = false
-
-            gitlab_rails[''initial_root_password''] = ENV[''GITLAB_ROOT_PASSWORD'']
-
-            '
+          value: |
+            external_url 'http://localhost:8088'
+            nginx['listen_port'] = 80
+            prometheus_monitoring['enable'] = false
+            gitlab_rails['initial_root_password'] = ENV['GITLAB_ROOT_PASSWORD']
         ports:
         - containerPort: 80
-        resources:
-          requests:
-            cpu: 500m
-            memory: 3Gi
-          limits:
-            memory: 5Gi
-        startupProbe:
-          tcpSocket:
-            port: 80
-          periodSeconds: 10
-          failureThreshold: 90
         readinessProbe:
           tcpSocket:
             port: 80
-          periodSeconds: 10
         volumeMounts:
         - name: config
           mountPath: /etc/gitlab

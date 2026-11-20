@@ -19,9 +19,7 @@ services:
     volumes:
     - artifactory-data:/var/opt/jfrog/artifactory
     ulimits:
-      nofile:
-        soft: 32000
-        hard: 32000
+      nofile: 32000
 volumes:
   artifactory-data:
 networks:

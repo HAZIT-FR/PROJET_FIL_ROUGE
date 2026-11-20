@@ -75,21 +75,9 @@ spec:
               key: POSTGRES_PASSWORD
         ports:
         - containerPort: 9000
-        resources:
-          requests:
-            cpu: 500m
-            memory: 2Gi
-          limits:
-            memory: 3Gi
-        startupProbe:
-          tcpSocket:
-            port: 9000
-          periodSeconds: 10
-          failureThreshold: 90
         readinessProbe:
           tcpSocket:
             port: 9000
-          periodSeconds: 10
         volumeMounts:
         - name: data
           mountPath: /opt/sonarqube/data

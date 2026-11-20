@@ -1,6 +1,5 @@
 # Doc : https://github.com/jenkinsci/configuration-as-code-plugin
 jenkins:
-  systemMessage: "Projet fil rouge"
   numExecutors: 1
   securityRealm:
     local:
@@ -11,8 +10,6 @@ jenkins:
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
-  remotingSecurity:
-    enabled: true
 credentials:
   system:
     domainCredentials:

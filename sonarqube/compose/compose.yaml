@@ -16,9 +16,7 @@ services:
     - sonarqube-logs:/opt/sonarqube/logs
     # Prérequis Linux : https://docs.sonarsource.com/sonarqube-community-build/server-installation/pre-installation/linux
     ulimits:
-      nofile:
-        soft: 131072
-        hard: 131072
+      nofile: 131072
       nproc: 8192
 volumes:
   sonarqube-data:

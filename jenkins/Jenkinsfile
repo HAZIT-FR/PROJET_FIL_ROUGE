@@ -1,41 +1,25 @@
 // Doc : https://www.jenkins.io/doc/book/pipeline/syntax/
 pipeline {
     agent any
-    options {
-        skipDefaultCheckout(true)
-        disableConcurrentBuilds()
-        buildDiscarder(logRotator(numToKeepStr: '10'))
-        timeout(time: 30, unit: 'MINUTES')
-    }
+    options { skipDefaultCheckout(true) }
     parameters {
-        string(name: 'GIT_URL', defaultValue: '', description: 'URL HTTP interne du dépôt GitLab')
-        string(name: 'GIT_BRANCH', defaultValue: 'main', description: 'Branche applicative')
-        string(name: 'SONAR_PROJECT', defaultValue: 'fil-rouge', description: 'Clé du projet SonarQube')
+        string(name: 'GIT_URL', defaultValue: '', description: 'URL du dépôt GitLab')
+        string(name: 'GIT_BRANCH', defaultValue: 'main', description: 'Branche')
     }
     environment {
         SONAR_HOST_URL = 'http://sonarqube:9000'
-        ARTIFACTORY_URL = 'http://artifactory:8081/artifactory'
-        TOMCAT_URL = 'http://tomcat:8080'
     }
     stages {
         stage('Code') {
             steps {
-                script {
-                    if (!params.GIT_URL?.trim()) { error('Renseigner GIT_URL avant de lancer le job.') }
-                }
                 deleteDir()
                 git url: params.GIT_URL, branch: params.GIT_BRANCH, credentialsId: 'gitlab'
             }
         }
         stage('Compilation') {
             steps {
-                sh 'mvn -B -ntp clean package -DskipTests'
-                sh '''
-                    set -eu
-                    set -- target/*.war
-                    [ "$#" -eq 1 ] && [ -f "$1" ] || { echo "Un seul WAR attendu dans target/"; exit 1; }
-                    cp "$1" application.war
-                '''
+                sh 'mvn clean package -DskipTests'
+                sh 'cp target/*.war application.war'
             }
         }
         stage('Qualité') {
@@ -44,7 +28,7 @@ pipeline {
                     sh '''
                         set +x
                         sonar-scanner \
-                          -Dsonar.projectKey="$SONAR_PROJECT" \
+                          -Dsonar.projectKey=fil-rouge \
                           -Dsonar.sources=src/main \
                           -Dsonar.java.binaries=target/classes \
                           -Dsonar.scanner.skipJreProvisioning=true \
@@ -58,12 +42,10 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASSWORD')]) {
                     sh '''
                         set +x
-                        curl --fail --silent --show-error --user "$ART_USER:$ART_PASSWORD" \
-                          --upload-file application.war \
-                          "$ARTIFACTORY_URL/war-local/fil-rouge/$BUILD_NUMBER/application.war"
+                        curl -f --user "$ART_USER:$ART_PASSWORD" --upload-file application.war \
+                          "http://artifactory:8081/artifactory/war-local/fil-rouge/$BUILD_NUMBER/application.war"
                     '''
                 }
-                archiveArtifacts artifacts: 'application.war', fingerprint: true
             }
         }
         stage('Déploiement') {
@@ -71,9 +53,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'tomcat', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASSWORD')]) {
                     sh '''
                         set +x
-                        curl --fail --silent --show-error --user "$TOMCAT_USER:$TOMCAT_PASSWORD" \
-                          --upload-file application.war \
-                          "$TOMCAT_URL/manager/text/deploy?path=/application&update=true" > deployment.txt
+                        curl -f --user "$TOMCAT_USER:$TOMCAT_PASSWORD" --upload-file application.war \
+                          'http://tomcat:8080/manager/text/deploy?path=/application&update=true' > deployment.txt
                         cat deployment.txt
                         grep -q '^OK -' deployment.txt
                     '''
@@ -85,15 +66,10 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'mysql', usernameVariable: 'DB_USER', passwordVariable: 'MYSQL_PWD')]) {
                     sh '''
                         set +x
-                        set -eu
                         umask 077
-                        fichier="/backups/application-$(date -u +%Y%m%dT%H%M%SZ)-$BUILD_NUMBER.sql"
-                        trap 'rm -f "$fichier.tmp"' EXIT
                         mariadb-dump --skip-ssl --host=mysql --user="$DB_USER" \
-                          --single-transaction --skip-lock-tables --no-tablespaces application > "$fichier.tmp"
-                        test -s "$fichier.tmp"
-                        mv "$fichier.tmp" "$fichier"
-                        gzip "$fichier"
+                          --single-transaction --no-tablespaces application > "/backups/application-$BUILD_NUMBER.sql"
+                        gzip "/backups/application-$BUILD_NUMBER.sql"
                     '''
                 }
             }
