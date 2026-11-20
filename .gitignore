@@ -1,2 +1,9 @@
 jenkins_2.580.1_all.deb
 jenkins_2.580.1_all.deb.1
+
+.env
+*.secret.yaml
+backups/
+*.sql.gz
+*.log
+__pycache__/

@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+  - name: sql
+    port: 3306
+    targetPort: 3306
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: mysql
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.4.13
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fil-rouge-env
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          value: application
+        - name: MYSQL_USER
+          value: application
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fil-rouge-env
+              key: MYSQL_PASSWORD
+        ports:
+        - containerPort: 3306
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            memory: 1Gi
+        startupProbe:
+          tcpSocket:
+            port: 3306
+          periodSeconds: 10
+          failureThreshold: 90
+        readinessProbe:
+          tcpSocket:
+            port: 3306
+          periodSeconds: 10
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi

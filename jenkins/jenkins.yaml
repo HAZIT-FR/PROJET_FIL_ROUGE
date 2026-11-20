@@ -1,0 +1,29 @@
+jenkins:
+  systemMessage: "Projet fil rouge"
+  numExecutors: 1
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: admin
+          password: "${JENKINS_PASSWORD}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  remotingSecurity:
+    enabled: true
+unclassified:
+  location:
+    url: "${JENKINS_URL}"
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              id: tomcat
+              username: deployer
+              password: "${TOMCAT_PASSWORD}"
+          - usernamePassword:
+              id: mysql
+              username: application
+              password: "${MYSQL_PASSWORD}"
