@@ -14,7 +14,7 @@ SonarQube demande `vm.max_map_count=1048576` sur l’hôte Linux du moteur Docke
 
 ```sh
 cp .env.example .env
-# Renseigner les six mots de passe dans .env (lettres et chiffres).
+# Renseigner les six mots de passe dans .env.
 docker network create fil-rouge
 docker compose --env-file .env -f postgres/compose/compose.yaml up -d --wait
 docker compose --env-file .env -f mysql/compose/compose.yaml up -d --wait
